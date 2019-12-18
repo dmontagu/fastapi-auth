@@ -1,0 +1,771 @@
+{
+    "components": {
+        "schemas": {
+            "APIMessage": {
+                "properties": {
+                    "detail": {
+                        "title": "Detail",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "detail"
+                ],
+                "title": "APIMessage",
+                "type": "object"
+            },
+            "AuthRegistrationRequest": {
+                "properties": {
+                    "password": {
+                        "title": "Password",
+                        "type": "string"
+                    },
+                    "username": {
+                        "title": "Username",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "username",
+                    "password"
+                ],
+                "title": "AuthRegistrationRequest",
+                "type": "object"
+            },
+            "AuthTokens": {
+                "description": "*Must* inherit from BaseModel (and thus use underscores) to comply with OAuth 2.0 standard",
+                "properties": {
+                    "access_token": {
+                        "title": "Access Token",
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "title": "Expires In",
+                        "type": "integer"
+                    },
+                    "refresh_token": {
+                        "title": "Refresh Token",
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "title": "Token Type",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "access_token",
+                    "refresh_token",
+                    "token_type"
+                ],
+                "title": "AuthTokens",
+                "type": "object"
+            },
+            "Body_login_token_post": {
+                "properties": {
+                    "client_id": {
+                        "title": "Client Id",
+                        "type": "string"
+                    },
+                    "client_secret": {
+                        "title": "Client Secret",
+                        "type": "string"
+                    },
+                    "grant_type": {
+                        "pattern": "password",
+                        "title": "Grant Type",
+                        "type": "string"
+                    },
+                    "password": {
+                        "title": "Password",
+                        "type": "string"
+                    },
+                    "scope": {
+                        "default": "",
+                        "title": "Scope",
+                        "type": "string"
+                    },
+                    "username": {
+                        "title": "Username",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "username",
+                    "password"
+                ],
+                "title": "Body_login_token_post",
+                "type": "object"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "title": "Detail",
+                        "type": "array"
+                    }
+                },
+                "title": "HTTPValidationError",
+                "type": "object"
+            },
+            "UserCreateRequest": {
+                "properties": {
+                    "email": {
+                        "format": "email",
+                        "title": "Email",
+                        "type": "string"
+                    },
+                    "password": {
+                        "title": "Password",
+                        "type": "string"
+                    },
+                    "username": {
+                        "title": "Username",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "username",
+                    "password"
+                ],
+                "title": "UserCreateRequest",
+                "type": "object"
+            },
+            "UserResult": {
+                "properties": {
+                    "email": {
+                        "format": "email",
+                        "title": "Email",
+                        "type": "string"
+                    },
+                    "userId": {
+                        "format": "uuid",
+                        "title": "Userid",
+                        "type": "string"
+                    },
+                    "username": {
+                        "title": "Username",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "username",
+                    "userId"
+                ],
+                "title": "UserResult",
+                "type": "object"
+            },
+            "UserUpdate": {
+                "properties": {
+                    "email": {
+                        "format": "email",
+                        "title": "Email",
+                        "type": "string"
+                    },
+                    "password": {
+                        "title": "Password",
+                        "type": "string"
+                    },
+                    "username": {
+                        "title": "Username",
+                        "type": "string"
+                    }
+                },
+                "title": "UserUpdate",
+                "type": "object"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "title": "Location",
+                        "type": "array"
+                    },
+                    "msg": {
+                        "title": "Message",
+                        "type": "string"
+                    },
+                    "type": {
+                        "title": "Error Type",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError",
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "OAuth2RefreshPasswordBearer": {
+                "flows": {
+                    "password": {
+                        "refreshUrl": "/api/v1/token/refresh",
+                        "scopes": {
+                            "admin": "Admin access."
+                        },
+                        "tokenUrl": "/api/v1/token"
+                    }
+                },
+                "type": "oauth2"
+            }
+        }
+    },
+    "info": {
+        "title": "Fast API",
+        "version": "0.1.0"
+    },
+    "openapi": "3.0.2",
+    "paths": {
+        "/admin/users": {
+            "get": {
+                "description": "Retrieve users.",
+                "operationId": "read_users",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "skip",
+                        "required": false,
+                        "schema": {
+                            "default": 0,
+                            "title": "Skip",
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "required": false,
+                        "schema": {
+                            "default": 100,
+                            "title": "Limit",
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/UserResult"
+                                    },
+                                    "title": "Response Read Users Admin Users Get",
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2RefreshPasswordBearer": [
+                            "admin"
+                        ]
+                    }
+                ],
+                "summary": "Read Users",
+                "tags": [
+                    "admin-auth"
+                ]
+            },
+            "post": {
+                "description": "Create new user.",
+                "operationId": "create_user",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "is_superuser",
+                        "required": false,
+                        "schema": {
+                            "default": false,
+                            "title": "Is Superuser",
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCreateRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResult"
+                                }
+                            }
+                        },
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2RefreshPasswordBearer": [
+                            "admin"
+                        ]
+                    }
+                ],
+                "summary": "Create User",
+                "tags": [
+                    "admin-auth"
+                ]
+            }
+        },
+        "/admin/users/{user_id}": {
+            "get": {
+                "description": "Get a specific user by id.",
+                "operationId": "read_user",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "user_id",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "title": "User Id",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResult"
+                                }
+                            }
+                        },
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2RefreshPasswordBearer": [
+                            "admin"
+                        ]
+                    }
+                ],
+                "summary": "Read User",
+                "tags": [
+                    "admin-auth"
+                ]
+            },
+            "patch": {
+                "description": "Update a user.",
+                "operationId": "update_user",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "user_id",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "title": "User Id",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserUpdate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResult"
+                                }
+                            }
+                        },
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2RefreshPasswordBearer": [
+                            "admin"
+                        ]
+                    }
+                ],
+                "summary": "Update User",
+                "tags": [
+                    "admin-auth"
+                ]
+            }
+        },
+        "/register": {
+            "post": {
+                "description": "Create new user without the need to be logged in.",
+                "operationId": "register",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthRegistrationRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResult"
+                                }
+                            }
+                        },
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    }
+                },
+                "summary": "Register",
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
+        "/self": {
+            "get": {
+                "operationId": "read_self",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResult"
+                                }
+                            }
+                        },
+                        "description": "Successful Response"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2RefreshPasswordBearer": []
+                    }
+                ],
+                "summary": "Read Self",
+                "tags": [
+                    "auth"
+                ]
+            },
+            "patch": {
+                "description": "Update a user.",
+                "operationId": "update_self",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserUpdate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResult"
+                                }
+                            }
+                        },
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2RefreshPasswordBearer": []
+                    }
+                ],
+                "summary": "Update Self",
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
+        "/token": {
+            "post": {
+                "description": "OAuth2 compatible token login, get an access token for future requests",
+                "operationId": "login",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_login_token_post"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthTokens"
+                                }
+                            }
+                        },
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    }
+                },
+                "summary": "Login",
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
+        "/token/logout": {
+            "get": {
+                "description": "Invalidate the provided refresh token",
+                "operationId": "logout",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "authorization",
+                        "required": false,
+                        "schema": {
+                            "title": "Authorization",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIMessage"
+                                }
+                            }
+                        },
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    }
+                },
+                "summary": "Logout",
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
+        "/token/logout/all": {
+            "get": {
+                "description": "Invalidate all outstanding refresh tokens for the user",
+                "operationId": "logout_all",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "authorization",
+                        "required": false,
+                        "schema": {
+                            "title": "Authorization",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIMessage"
+                                }
+                            }
+                        },
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    }
+                },
+                "summary": "Logout All",
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
+        "/token/refresh": {
+            "post": {
+                "description": "Consume a refresh token to request a new access token",
+                "operationId": "refresh",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "authorization",
+                        "required": false,
+                        "schema": {
+                            "title": "Authorization",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthTokens"
+                                }
+                            }
+                        },
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    }
+                },
+                "summary": "Refresh",
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
+        "/token/validate": {
+            "get": {
+                "operationId": "validate_token",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIMessage"
+                                }
+                            }
+                        },
+                        "description": "Successful Response"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2RefreshPasswordBearer": []
+                    }
+                ],
+                "summary": "Validate Token",
+                "tags": [
+                    "auth"
+                ]
+            }
+        }
+    }
+}

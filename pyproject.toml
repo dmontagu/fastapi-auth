@@ -1,0 +1,67 @@
+[tool.poetry]
+name = "fastapi_auth"
+version = "0.1.0"
+description = ""
+license = "MIT"
+authors = ["David Montague <davwmont@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+fastapi = "~0.45"
+pydantic = { version = "^1.0" }
+async-exit-stack = {version = "1.0.1", python="<3.7"}
+async-generator = {version = "1.10", python="<3.7"}
+
+typing_extensions = "*"
+sqlalchemy = "*"
+python-multipart = "*"
+pyjwt = "*"
+
+[tool.poetry.dev-dependencies]
+# Runtime optional
+bcrypt = "*"
+argon2-cffi = "*"
+psycopg2-binary = "*"
+aiofiles = "*"
+email-validator = "*"
+
+# For starlette TestClient
+requests = "*"
+
+# Testing
+pytest = "*"
+pytest-cov = "*"
+pytest-asyncio = "*"
+coverage = "*"
+
+# Static
+isort = "*"
+autoflake = "*"
+black = { version = "*", allow-prereleases = true }
+flake8 = "*"
+mypy = "0.740"  # Required for compatibility with current pydantic release
+sqlalchemy-stubs = "*"
+
+[tool.black]
+line-length = 120
+target_version = ['py37']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+    \.git
+    | \.mypy_cache
+    | \.pytest_cache
+    | htmlcov
+    | build
+  )/
+)
+'''
+
+[tool.isort]
+line_length = 120
+known_first_party = ["fastapi_auth"]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+combine_as_imports = true
