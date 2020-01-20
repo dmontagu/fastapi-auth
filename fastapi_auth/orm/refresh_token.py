@@ -1,7 +1,6 @@
 import sqlalchemy as sa
+from fastapi_utils.guid_type import GUID
 
-from fastapi_auth.fastapi_util.orm.base import Base
-from fastapi_auth.fastapi_util.orm.columns import fk_column
 from fastapi_auth.models.user import UserID
 
 # TODO: Make this more override-friendly
@@ -11,5 +10,5 @@ USER_ID_COLUMN = "user.user_id"
 
 class RefreshToken(Base):
     token = sa.Column("token", sa.String, primary_key=True, index=True)
-    user_id: "sa.Column[UserID]" = fk_column(USER_ID_COLUMN)
+    user_id: "sa.Column[UserID]" = sa.Column(GUID, sa.ForeignKey(USER_ID_COLUMN), nullable=False)
     exp = sa.Column("exp", sa.Integer, index=True, nullable=False)

@@ -17,7 +17,7 @@ bcrypt_hasher = BCryptPasswordHasher()
 
 
 def test_default_password() -> None:
-    checker = get_auth_settings().password_checker
+    checker = get_auth_settings().hashers
     password = RawPassword("password")
     hashed = checker.make_sync(password)
     assert checker.check_sync(password, hashed).success

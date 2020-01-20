@@ -114,7 +114,7 @@ class BaseAuthRouterBuilder(Generic[UserCreateT, UserCreateRequestT, UserInDBT, 
         user: Optional[UserOrmT] = db.query(self.orm_type).filter(self.orm_type.username == username).first()
         if user is None:
             raise_auth_error(detail="User not found")
-        password_checker = self.settings.password_checker
+        password_checker = self.settings.hashers
         result = password_checker.check_sync(password, HashedPassword(user.hashed_password))
         if not result.success:
             raise_auth_error(detail="Incorrect password")
@@ -122,7 +122,7 @@ class BaseAuthRouterBuilder(Generic[UserCreateT, UserCreateRequestT, UserInDBT, 
         return self.in_db_type(**user.dict())
 
     def create_user(self, db: Session, user_create_request: UserCreateRequestT, is_superuser: bool) -> UserInDBT:
-        password_checker = self.settings.password_checker
+        password_checker = self.settings.hashers
         hashed_password = password_checker.make_sync(user_create_request.password)
         user_create = self.create_type(
             hashed_password=hashed_password, is_superuser=is_superuser, **user_create_request.dict()
@@ -135,7 +135,7 @@ class BaseAuthRouterBuilder(Generic[UserCreateT, UserCreateRequestT, UserInDBT, 
         user_update = self.update_type(**update_request.dict(exclude_unset=True))
         update_dict: Dict[str, Any] = user_update.dict(exclude_unset=True)
         if update_request.password:
-            password_checker = self.settings.password_checker
+            password_checker = self.settings.hashers
             hashed_password = password_checker.make_sync(update_request.password)
             update_dict["hashed_password"] = hashed_password
 

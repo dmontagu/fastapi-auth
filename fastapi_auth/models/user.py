@@ -1,9 +1,9 @@
 import uuid
 from typing import List, NewType, Optional
 
+from fastapi_utils.api_model import APIModel
 from pydantic import BaseModel
 
-from fastapi_auth.fastapi_util.api_model import APIModel
 from fastapi_auth.security.password import HashedPassword, RawPassword
 
 UserID = NewType("UserID", uuid.UUID)

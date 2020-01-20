@@ -2,15 +2,16 @@ import os
 from functools import lru_cache
 from typing import Dict, List, Optional
 
-from pydantic import validator
+from pydantic import BaseSettings, PyObject, validator
 
-from fastapi_auth.fastapi_util.settings.base_api_settings import BaseAPISettings
 from fastapi_auth.security.password import BCryptPasswordHasher, PasswordChecker
 
 DEFAULT_PASSWORD_CHECKER = PasswordChecker([BCryptPasswordHasher()])
 
 
-class AuthSettings(BaseAPISettings):
+class AuthSettings(BaseSettings):
+    debug: bool = False  # If True, errors will be returned with tracebacks
+
     secret_key: bytes = os.urandom(32)
     superuser_scope: str = "admin"
     expected_scopes: Dict[str, str] = {"admin": "Admin access."}
@@ -30,7 +31,7 @@ class AuthSettings(BaseAPISettings):
     encoding_algorithm: str = "HS256"
     decoding_algorithms: List[str] = ["HS256"]
 
-    password_checker: PasswordChecker = None  # type: ignore
+    hashers: PasswordChecker = PyObject  # type: ignore
 
     @validator("password_checker", pre=True, always=True)
     def validate_password_checker(cls, v: Optional[PasswordChecker]) -> PasswordChecker:
@@ -38,8 +39,12 @@ class AuthSettings(BaseAPISettings):
             v = DEFAULT_PASSWORD_CHECKER
         return v
 
+    @cached_property
+
     class Config:
         env_prefix = "auth_"
+        arbitrary_types_allowed = True
+        validate_assignment = True
 
 
 @lru_cache()

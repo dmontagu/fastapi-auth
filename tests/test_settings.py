@@ -40,16 +40,16 @@ def test_database_backend(
 
 
 def test_auth_settings() -> None:
-    default_checker = get_auth_settings().password_checker
+    default_checker = get_auth_settings().hashers
     new_checker = PasswordChecker([BCryptPasswordHasher()])
     assert default_checker is not new_checker
-    get_auth_settings().password_checker = new_checker
+    get_auth_settings().hashers = new_checker
 
-    assert get_auth_settings().password_checker is not default_checker
-    assert get_auth_settings().password_checker is new_checker
+    assert get_auth_settings().hashers is not default_checker
+    assert get_auth_settings().hashers is new_checker
 
     with pytest.raises(ValidationError) as exc_info:
-        get_auth_settings().password_checker = 1  # type: ignore[assignment]
+        get_auth_settings().hashers = 1  # type: ignore[assignment]
     assert exc_info.value.errors() == [
         {
             "ctx": {"expected_arbitrary_type": "PasswordChecker"},

@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN, HTTP_409_CONFLICT
 
-from fastapi_auth.fastapi_util.settings.api_settings import get_api_settings
+from fastapi_auth.auth_settings import get_auth_settings
 
 DEFAULT_ERROR_MESSAGE = "An error occurred"
 DEFAULT_AUTH_ERROR_MSG = "Authentication failed"
@@ -68,7 +68,7 @@ def expected_integrity_error(
 def _raise_api_response_error(
     detail: Optional[str], status_code: int, headers: Optional[Dict[str, str]] = None, exc: Optional[Exception] = None
 ) -> NoReturn:
-    if get_api_settings().debug and exc is not None:
+    if get_auth_settings().debug and exc is not None:
         detail = str(exc)
     if detail is None:
         detail = DEFAULT_ERROR_MESSAGE
