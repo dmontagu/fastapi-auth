@@ -8,7 +8,7 @@ authors = ["David Montague <davwmont@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.6"
 fastapi = "~0.45"
-pydantic = { version = "^1.0" }
+pydantic = { version = "^1.6" }
 async-exit-stack = {version = "1.0.1", python="<3.7"}
 async-generator = {version = "1.10", python="<3.7"}
 
