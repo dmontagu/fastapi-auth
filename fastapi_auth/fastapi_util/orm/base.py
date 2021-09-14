@@ -32,8 +32,7 @@ class CustomBase:
             return camel2snake(cls.__name__)
 
     def dict(self) -> Dict[str, Any]:
-        data = {key: getattr(self, key) for key in self.__table__.c.keys()}
-        return data
+        return {key: getattr(self, key) for key in self.__table__.c.keys()}
 
 
 _Base = declarative_base(cls=CustomBase, metaclass=CustomMeta)

@@ -107,8 +107,7 @@ class BaseAuthRouterBuilder(Generic[UserCreateT, UserCreateRequestT, UserInDBT, 
     @classmethod
     def read(cls, db: Session, user_id: UserID) -> Optional[UserInDBT]:
         db_user = db.query(cls.orm_type).filter(cls.orm_type.user_id == user_id).first()
-        user = cls.in_db_type(**db_user.dict()) if db_user is not None else None
-        return user
+        return cls.in_db_type(**db_user.dict()) if db_user is not None else None
 
     def authenticate(self, db: Session, username: str, password: RawPassword) -> UserInDBT:
         user: Optional[UserOrmT] = db.query(self.orm_type).filter(self.orm_type.username == username).first()
@@ -177,8 +176,7 @@ class BaseAuthRouterBuilder(Generic[UserCreateT, UserCreateRequestT, UserInDBT, 
                 db=db, username=form_data.username, password=RawPassword(form_data.password)
             )
             tokens = self.login_flow(db=db, user=user, scopes=form_data.scopes)
-            response = tokens.to_response()
-            return response
+            return tokens.to_response()
 
         @auth_router.post(
             refresh_url,
@@ -191,8 +189,7 @@ class BaseAuthRouterBuilder(Generic[UserCreateT, UserCreateRequestT, UserInDBT, 
             Consume a refresh token to request a new access token
             """
             tokens = self.refresh_token_flow(db=db, token=token)
-            response = tokens.to_response()
-            return response
+            return tokens.to_response()
 
         @auth_router.get(token_url + "/validate", response_model=APIMessage, dependencies=[Depends(self.get_user)])
         def validate_token() -> APIMessage:
@@ -274,8 +271,7 @@ class BaseAuthRouterBuilder(Generic[UserCreateT, UserCreateRequestT, UserInDBT, 
             """
             Retrieve users.
             """
-            result = db.query(self.orm_type).offset(skip).limit(limit).all()
-            return result
+            return db.query(self.orm_type).offset(skip).limit(limit).all()
 
         @admin_router.post("/users", response_model=api_type)
         def create_user(
@@ -303,8 +299,7 @@ class BaseAuthRouterBuilder(Generic[UserCreateT, UserCreateRequestT, UserInDBT, 
 
     @staticmethod
     def login_flow(db: Session, user: UserInDBT, scopes: List[str]) -> "TokenPair":
-        token_pair = _create_tokens(db=db, user=user, scopes=scopes)
-        return token_pair
+        return _create_tokens(db=db, user=user, scopes=scopes)
 
     def refresh_token_flow(self, db: Session, token: "Token") -> "TokenPair":
         """
@@ -316,8 +311,7 @@ class BaseAuthRouterBuilder(Generic[UserCreateT, UserCreateRequestT, UserInDBT, 
         if user is None:
             raise_auth_error(detail="User not found; try logging in again")
         _consume_refresh_token(db=db, token=token)
-        token_pair = _create_tokens(db=db, user=user, scopes=token.payload.scopes)
-        return token_pair
+        return _create_tokens(db=db, user=user, scopes=token.payload.scopes)
 
     def setup_first_superuser(self, engine: sa.engine.Engine, **extra_create_kwargs: Any) -> None:
         settings = self.settings

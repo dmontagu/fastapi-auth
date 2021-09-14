@@ -91,15 +91,24 @@ class TestDebug(TestAuthApiBase):
     def test_login_password_fails(self) -> None:
         admin_username = get_auth_settings().first_superuser
         assert admin_username is not None
-        bad_password = "wrong"
-        message = self._get_login_response(admin_username, bad_password, APIMessage, HTTP_401_UNAUTHORIZED)
-        assert message.detail == "Incorrect password"
+        self._extracted_from_test_login_username_fails_4(
+            admin_username, "Incorrect password"
+        )
 
     def test_login_username_fails(self) -> None:
         bad_username = "bad@test.com"
-        bad_password = "wrong"
-        message = self._get_login_response(bad_username, bad_password, APIMessage, HTTP_401_UNAUTHORIZED)
-        assert message.detail == "User not found"
+        self._extracted_from_test_login_username_fails_4(
+            bad_username, "User not found"
+        )
+
+
+    def _extracted_from_test_login_username_fails_4(self, arg0, arg1):
+        bad_password = 'wrong'
+        message = self._get_login_response(
+            arg0, bad_password, APIMessage, HTTP_401_UNAUTHORIZED
+        )
+
+        assert message.detail == arg1
 
     def test_read_users(self, admin_access_headers: Dict[str, str]) -> None:
         url = self.debug_auth_app.url_path_for(AdminAuthEndpointName.read_users)
