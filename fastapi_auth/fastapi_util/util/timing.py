@@ -76,12 +76,11 @@ class MetricNamer:
                 route = r
                 break
         if hasattr(route, "endpoint") and hasattr(route, "name"):
-            name = f"{self.prefix}{route.endpoint.__module__}.{route.name}"  # type: ignore
+            return f"{self.prefix}{route.endpoint.__module__}.{route.name}"
         elif isinstance(route, Mount):
-            name = f"{type(route.app).__name__}<{route.name!r}>"
+            return f"{type(route.app).__name__}<{route.name!r}>"
         else:
-            name = str(f"<Path: {scope['path']}>")
-        return name
+            return str(f"<Path: {scope['path']}>")
 
 
 def get_cpu_time() -> float:
